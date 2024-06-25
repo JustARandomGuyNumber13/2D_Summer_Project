@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent (typeof(Animator)) ]
+[RequireComponent (typeof(Rigidbody2D))]
 public class P_Movement : MonoBehaviour
 {
     [SerializeField] private P_Stat stat;
-    [SerializeField] private Animator anim;
 
+    private Animator anim;
     private Rigidbody2D rb;
 
     private void Start()
     {
+        anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
     }
     private void FixedUpdate()
