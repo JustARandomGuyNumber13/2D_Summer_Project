@@ -13,3 +13,7 @@ MonoBehaviour:
   m_Name: P_Stat_0.1
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  jumpStrength: 7
+  groundCheckDistance: 1.1
+  attackDelay: 0.2
+  shootDelay: 0.3
