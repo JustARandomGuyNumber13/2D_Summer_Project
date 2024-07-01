@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - isGrounded
   layers:
   - Default
   - TransparentFX
@@ -12,8 +13,8 @@ TagManager:
   - Water
   - UI
   - Player
-  - 
-  - 
+  - MobsBulon
+  - isGrounded
   - 
   - 
   - 
@@ -43,4 +44,7 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 1031932741
+    locked: 0
+  - name: MobsBulon
+    uniqueID: 1940694097
     locked: 0

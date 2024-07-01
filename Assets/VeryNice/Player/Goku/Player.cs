@@ -1,41 +1,97 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+
+//1. là nhân vật di chuyển
 
 public class Player : MonoBehaviour
 {
-    [Header("Stat")]
-    [SerializeField] private float moveSpeed;
+    public Animator animator;
+    public bool isRight = true;
 
-    [Header("Run")]
-    [SerializeField] private float run; [SerializeField] private float jump; [SerializeField] private float back;
+    public float jumpForce = 5f; // Lực nhảy của chim
 
-    private Animator anim;
     private Rigidbody2D rb;
 
-    private void Awake()
+    void Start()
     {
-        anim = GetComponent<Animator>();   
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void FixedUpdate()
+    void Update()
     {
-        Move();
+        bool isMoving = false; // Biến để kiểm tra xem nhân vật có đang di chuyển hay không
+
+        // Xử lý di chuyển sang phải
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            isRight = true;
+            isMoving = true; // Nhân vật đang di chuyển
+            animator.SetBool("isRunning", true);
+            transform.Translate(Time.deltaTime * 5, 0, 0);
+
+            // Đảm bảo nhân vật quay mặt về phía đúng
+            Vector2 scale = transform.localScale;
+            if (scale.x < 0) // Nếu nhân vật đang quay trái
+            {
+                scale.x *= -1; // Đảo ngược hướng quay mặt
+            }
+            transform.localScale = scale;
+        }
+
+        // Xử lý di chuyển sang trái
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            isRight = false;
+            isMoving = true; // Nhân vật đang di chuyển
+            animator.SetBool("isRunning", true);
+            transform.Translate(-Time.deltaTime * 5, 0, 0);
+
+            // Đảm bảo nhân vật quay mặt về phía đúng
+            Vector2 scale = transform.localScale;
+            if (scale.x > 0) // Nếu nhân vật đang quay phải
+            {
+                scale.x *= -1; // Đảo ngược hướng quay mặt
+            }
+            transform.localScale = scale;
+        }
+
+        // Xử lý khi không di chuyển
+        if (!isMoving)
+        {
+            animator.SetBool("isRunning", true); // Đặt lại isRunning về false khi không di chuyển
+        }
+
+        // Xử lý nhảy
+        if (Input.GetKey(KeyCode.UpArrow) || Input.GetMouseButtonDown(0))
+        {
+            if (isRight)
+            {
+                transform.Translate(Time.deltaTime * 3, Time.deltaTime * 15, 0);
+                Vector2 scale = transform.localScale;
+                if (scale.x < 0)
+                {
+                    scale.x *= -1;
+                }
+                transform.localScale = scale;
+            }
+            else
+            {
+                transform.Translate(-Time.deltaTime * 3, Time.deltaTime * 7, 0);
+                Vector2 scale = transform.localScale;
+                if (scale.x > 0)
+                {
+                    scale.x *= -1;
+                }
+                transform.localScale = scale;
+            }
+            Jump();
+        }
     }
 
-    private void Move()
+    void Jump()
     {
-        float inputX = Input.GetAxisRaw("Horizontal") * moveSpeed;
-        rb.velocity = new Vector2(inputX, rb.velocity.y);
-
-        anim.SetInteger("walk", (int) inputX);
-
-        Vector3 scale = transform.localScale;
-        if (inputX < 0 && scale.x > 0)              // Flip Left      Ctrl + K, C. U
-            transform.localScale = new Vector2(-scale.x, scale.y);
-        else if (inputX > 0 && scale.x < 0)      // Flip Right
-            transform.localScale = new Vector2(-scale.x, scale.y);
+        rb.velocity = Vector2.up * jumpForce;
     }
 }
